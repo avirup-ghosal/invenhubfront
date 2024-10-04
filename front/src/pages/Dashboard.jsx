@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    const storedEmail = JSON.parse(localStorage.getItem("email"));
+    const storedEmail = localStorage.getItem("email");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
