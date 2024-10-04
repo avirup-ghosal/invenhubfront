@@ -20,21 +20,33 @@ export function Products(){
     const [email,setemail]=useState("");
     const [error, setError] = useState(""); // State to track errors
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setemail(localStorage.getItem("email"));
-                const response = await axios.get("https://inven-hub-backend.vercel.app/product",{
-                    params: { email: email }
-                });
-                setproduct(response.data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-            }
-        };
+        const storedEmail =localStorage.getItem("email");
+        if (storedEmail) {
+          setemail(storedEmail);
+        } else {
+          console.error("Email not found in localStorage");
+        }
+      }, []);
+    
+      const fetchProducts = async () => {
+        try {
+          if (email) {
+            const response = await axios.get(
+              `https://inven-hub-backend.vercel.app/product?email=${email}`
+            );
+            setproduct(response.data);
+          }
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      };
+    
+      useEffect(() => {
         fetchProducts();
-    }, [email]);
+      }, [email]);
 
-    const handleAddProduct = async () => {
+    const handleAddProduct = async (e) => {
+        e.preventDefault();
         setemail(localStorage.getItem("email"));
         // Validation: Check if any of the fields are empty
         if (!name || !cost_price || !selling_price || !sale || !manufacture_date || !expiry_date || !batch_number || !email) {
